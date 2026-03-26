@@ -1,24 +1,10 @@
 package smartinternshipportal.algorithms;
 
-import smartinternshipportal.model.Job;
-
-import java.util.*;
+import java.util.List;
 
 public class JobRanker {
-
-    public static List<Job> rankJobs(HashMap<Job, Double> jobScores) {
-
-        PriorityQueue<Map.Entry<Job, Double>> pq =
-                new PriorityQueue<>((a, b) -> Double.compare(b.getValue(), a.getValue()));
-
-        pq.addAll(jobScores.entrySet());
-
-        List<Job> rankedJobs = new ArrayList<>();
-
-        while (!pq.isEmpty()) {
-            rankedJobs.add(pq.poll().getKey());
-        }
-
-        return rankedJobs;
-    }
+	public static List<RecommendationEngine.Recommendation> rankJobs(List<RecommendationEngine.Recommendation> scoreMap) {
+		scoreMap.sort((a, b) -> Double.compare(b.getScore(), a.getScore())); // rank by score
+		return scoreMap;
+	}
 }

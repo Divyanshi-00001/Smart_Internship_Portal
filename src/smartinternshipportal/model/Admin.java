@@ -1,49 +1,36 @@
 package smartinternshipportal.model;
 
 public class Admin {
-
-    private int adminId;
-    private String username;
-    private String password;
-
-    // Default Constructor
-    public Admin() {}
-
-    // Parameterized Constructor
-    public Admin(int adminId, String username, String password) {
-        this.adminId = adminId;
-        this.username = username;
-        this.password = password;
-    }
-
-    // Getters and Setters
-
-    public int getAdminId() {
-        return adminId;
-    }
-
-    public void setAdminId(int adminId) {
-        this.adminId = adminId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "Admin ID: " + adminId + ", Username: " + username;
-    }
+	private int adminIdIO;
+	private String usernameIO;
+	private String passwordIO;
+	private int adminId;
+	private String username;
+	private String password;
+	
+	public Admin() {
+		this.adminId = 10501;
+		this.username = "user123";
+		this.password = "admin123";
+	}
+	
+	public void getId(int id) {
+		this.adminIdIO = id;
+	}
+	public void getName(String name) {
+		this.usernameIO = name;
+	}
+	public void getPassword(String id) {
+		this.passwordIO = id;
+	}
+	
+	public boolean Authentication() {
+		if((adminId == adminIdIO) && (usernameIO.equals(username)) && (passwordIO.equals(password))) {
+			return true;
+		} 
+		else {
+			return false;
+		}
+	}
+	
 }
