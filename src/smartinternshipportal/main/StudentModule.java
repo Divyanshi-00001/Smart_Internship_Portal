@@ -57,13 +57,161 @@ public class StudentModule {
 	    if(loggedStudent != null) {
 	        System.out.println("Login Successful!");
 	        loggedStudent.show();
+	        PowersAfterLogin(loggedStudent);
 	    } else {
 	        System.out.println("Invalid Credentials!");
 	    }
 	}
 	
-	public static void PowersAfterLogin() {
-		
+	public static void PowersAfterLogin(Student loggedStudent) {
+	    Scanner sc = new Scanner(System.in);
+	    int choice;
+
+	    do {
+	        System.out.println("\n1. View Profile");
+	        System.out.println("2. Get Job Recommendations");
+	        System.out.println("3. Update Credentials");
+	        System.out.println("4. Logout");
+	        System.out.print("Enter choice: ");
+
+	        choice = Integer.parseInt(sc.nextLine());
+
+	        switch(choice) {
+	            case 1:
+	                loggedStudent.show();
+	                break;
+
+	            case 2:
+	                RecommendJobs();
+	                break;
+
+	            case 3:
+	                updateCredentials(loggedStudent);
+	                break;
+
+	            case 4:
+	                System.out.println("Logged out successfully!");
+	                break;
+
+	            default:
+	                System.out.println("Invalid choice!");
+	        }
+	    } while(choice != 4);
+	}
+	
+	public static void updateCredentials(Student student) {
+	    Scanner sc = new Scanner(System.in);
+
+	    System.out.println("\n--- Update Credentials ---");
+	    System.out.println("1. Update Name");
+	    System.out.println("2. Update Email");
+	    System.out.println("3. Update Password");
+	    System.out.println("4. Update CGPA");
+	    System.out.println("5. Update Resume");
+	    System.out.println("6. Update Expected Salary");
+	    System.out.print("Enter choice: ");
+
+	    int choice = Integer.parseInt(sc.nextLine());
+
+	    try {
+	        switch(choice) {
+		        case 1:
+		            System.out.print("Enter new name: ");
+		            String name = sc.nextLine();
+	
+		            if(name.isEmpty())
+		                throw new InvalidNameException("Name cannot be empty");
+	
+		            System.out.print("Are you sure you want to update? (yes/no): ");
+		            String confirm1 = sc.nextLine().trim().toLowerCase();
+	
+		            if(!confirm1.equals("yes")) {
+		                System.out.println("Update cancelled.");
+		                return;
+		            }
+	
+		            student.setName(name);
+		            break;
+
+		        case 2:
+		            System.out.print("Enter new email: ");
+		            String email = sc.nextLine().trim();
+
+		            if (!email.contains("@") || !email.contains("."))
+		                throw new InvalidEmailException("Invalid Email");
+
+		            // 🔴 Check duplicate email
+		            for(int i = 0; i <= MainApp.Snum; i++) {
+		                if(MainApp.ss[i] != null &&
+		                   MainApp.ss[i].getEmail().equals(email) &&
+		                   MainApp.ss[i] != student) {   // exclude current user
+
+		                    throw new InvalidEmailException("Email already exists!");
+		                }
+		            }
+
+		            System.out.print("Are you sure you want to update? (yes/no): ");
+		            String confirm2 = sc.nextLine().trim().toLowerCase();
+
+		            if(!confirm2.equals("yes")) {
+		                System.out.println("Update cancelled.");
+		                return;
+		            }
+
+		            student.setEmail(email);
+		            break;
+
+	            case 3:
+	                System.out.print("Enter new password: ");
+	                String password = sc.nextLine();
+	                if(password.length() < 8)
+	                    throw new InvalidPasswordException("Weak Password");
+	                student.setPassword(password);
+	                break;
+
+	            case 4:
+	                System.out.print("Enter new CGPA: ");
+	                double cgpa = Double.parseDouble(sc.nextLine());
+	                if(cgpa < 0 || cgpa > 10)
+	                    throw new InvalidCgpaException("Invalid CGPA");
+	                student.setCgpa(cgpa);
+	                break;
+
+	            case 5:
+	                System.out.print("Enter new resume path: ");
+	                String path = sc.nextLine();
+
+	                if (!path.endsWith(".txt"))
+	                    throw new InvalidFilePathException("Resume must be .txt file");
+
+	                java.io.File f = new java.io.File(path);
+	                if (!f.exists())
+	                    throw new InvalidFilePathException("File does not exist");
+
+	                student.setResumePath(path);
+	                student.getSkills().clear();   // clear old skills
+	                student.readingFile();         // reload skills
+	                break;
+
+	            case 6:
+	                System.out.print("Enter new expected salary: ");
+	                double salary = Double.parseDouble(sc.nextLine());
+	                if(salary < 0)
+	                    throw new InvalidSalaryException("Invalid Salary");
+	                student.setSalary(salary);
+	                break;
+
+	            default:
+	                System.out.println("Invalid choice!");
+	                return;
+	        }
+
+	        System.out.println("Details updated successfully!");
+	        student.show();
+
+	    } catch (Exception e) {
+	        System.out.println("Error: " + e.getMessage());
+	    }
 	}
 	
 	public static void SignUpResizeMainArrays() {

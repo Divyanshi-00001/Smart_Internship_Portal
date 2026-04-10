@@ -41,7 +41,7 @@ public class Company {
 	public String getPassword() {
 		return password;
 	}
-	public void setPassword() {
+	public void setPassword(String password) {
 		this.password=password;
 	}
 	
