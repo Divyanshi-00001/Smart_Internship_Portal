@@ -4,7 +4,7 @@ import smartinternshipportal.model.*;
 import java.util.*;
 
 public class RecommendationEngine {
-    public static List<Job> recommendJobs(Student student, List<Job> jobs) {
+    public static List<Map.Entry<Job, Double>> recommendJobs(Student student, List<Job> jobs) {
         Map<Job, Double> scoreMap = new HashMap<>();
 
         for (Job job : jobs) {

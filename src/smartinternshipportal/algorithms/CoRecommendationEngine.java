@@ -4,7 +4,7 @@ import smartinternshipportal.model.*;
 import java.util.*;
 
 public class CoRecommendationEngine {
-    public static List<Student> recommendJobs(Job job, List<Student> Students) {
+    public static List<Map.Entry<Student, Double>> recommendJobs(Job job, List<Student> Students) {
         Map<Student, Double> scoreMap = new HashMap<>();
 
         for (Student student : Students) {

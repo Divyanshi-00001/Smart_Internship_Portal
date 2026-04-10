@@ -3,6 +3,7 @@ package smartinternshipportal.main;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import smartinternshipportal.model.Admin;
 import smartinternshipportal.model.Job;
@@ -166,11 +167,12 @@ public class MainApp {
 							    System.out.println("Student not found!");
 							    break;
 							}
-					        List<Job> recommended = RecommendationEngine.recommendJobs(ss[i], jobList);
+							List<Map.Entry<Job, Double>> recommended = RecommendationEngine.recommendJobs(ss[i], jobList);
 	
 					        System.out.println("Recommended Jobs:");
-					        for (Job jb : recommended) {
-					            jb.show();
+					        for (Map.Entry<Job, Double> jb : recommended) {
+					        	System.out.println("Score: "+jb.getValue());
+					            jb.getKey().show();
 					        }
 					    } else {
 					        System.out.println("No data available!");
@@ -195,11 +197,12 @@ public class MainApp {
 							    System.out.println("Job not found!");
 							    break;
 							}
-					        List<Student> recommended = CoRecommendationEngine.recommendJobs(jj[i], studentList);
+							List<Map.Entry<Student, Double>> recommended = CoRecommendationEngine.recommendJobs(jj[i], studentList);
 	
 					        System.out.println("Recommended Students:");
-					        for (Student s : recommended) {
-					            s.show();
+					        for (Map.Entry<Student, Double> s : recommended) {
+					        	System.out.println("Score: "+s.getValue());
+					            s.getKey().show();
 					        }
 					    } else {
 					        System.out.println("No data available!");
