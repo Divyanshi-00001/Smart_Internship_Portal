@@ -2,41 +2,44 @@ package smartinternshipportal.model;
 
 public class Application {
 	private String applicationId;
-	private static int id_no=100;
-	private int studentId;
-	private int jobId;
-	private String status;
+	private static int id_no=1000;
+	private String studentId;
+	private String jobId;
+	private boolean status=false;
 	
-	public Application() {
+	public Application(String studentId, String jobId) {
 		id_no++;
+		applicationId="App:"+id_no;
+		status=true;
+		this.studentId=studentId;
+		this.jobId=jobId;
 	}
 	
 	public String getApplicationId() {
 		return applicationId;
 	}
 	public void setApplicationId() {
-		applicationId="Application"+id_no;
+		applicationId="App:"+id_no;
 	}
 	
-	public int getStudentId() {
+	public String getStudentId() {
 		return studentId;
 	}
-	public void setStudentId(int id) {
+	public void setStudentId(String id) {
 		studentId = id;
 	}
 	
-	public int getJobId() {
+	public String getJobId() {
 		return jobId;
 	}
-	public void setJobId(int id) {
+	public void setJobId(String id) {
 		jobId = id;
 	}
 	
-	public String getStatus() {
+	public boolean getStatus() {
 		return status;
 	}
-	public void setStatus(String st) {
-		// Pending, Accepted & Rejected.
+	public void setStatus(boolean st) {
 		status = st;
 	}
 }

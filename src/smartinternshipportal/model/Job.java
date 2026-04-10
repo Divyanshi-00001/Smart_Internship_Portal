@@ -1,24 +1,32 @@
 package smartinternshipportal.model;
 import java.util.HashSet;
 
-public class Job {
+public class Job extends Company{
 	private String jobId;
-	private static int jid_no=100;
+	private static int jid_no=1000;
 	private String title;
 	private String location;
 	private double salary;
 	private double minCgpa;
 	private HashSet<String> requiredSkills = new HashSet<>();
 	
-	public Job() {
+	public Job(String companyName, String email, String password, String title, String location, double salary, double cgpa, HashSet<String> skills) {
+		super(companyName, email, password);
 		jid_no++;
+		this.jobId = "Job:"+jid_no;
+		this.title=title;
+		this.location =location;
+		this.salary=salary;
+		this.minCgpa=cgpa;
+		this.requiredSkills = skills;
+		show();
 	}
 	
 	public String getJobId() {
 		return jobId;
 	} 
 	public void setJobId() {
-		this.jobId = "Job"+jid_no;
+		this.jobId = "Job:"+jid_no;
 	} 
 
 	public String getTitle() {
@@ -39,7 +47,7 @@ public class Job {
 		return salary;
 	}
 	public void setSalary(double sal) {
-		this.salary = salary;
+		this.salary = sal;
 	}
 	
 	public double getMinCgpa() {
@@ -56,6 +64,7 @@ public class Job {
 		requiredSkills=skills;
 	} 
 	public void show() {
-		System.out.println("  Job Id: "+jobId+"  Job Title: "+title+"  Job Location: "+location+"  Job Salary: "+salary+"  Min. CGPA: "+minCgpa);
+		super.show();
+		System.out.println("Job Id: "+jobId+"\nJob Title: "+title+"\nJob Location: "+location+"\nJob Salary: "+salary+"\nMin. CGPA: "+minCgpa+"\n-------------------------------------------------------\n");
 	}
 }

@@ -1,5 +1,7 @@
 package smartinternshipportal.model;
 import java.util.HashSet;
+import java.io.*;
+
 
 public class Student {
 	// Fields
@@ -12,16 +14,41 @@ public class Student {
 	private HashSet<String> skills = new HashSet<>();
 	private String resumePath;
 	private double expectedJobSalary;
+	private String line;
 	
-	public Student() {
+	public Student(String nm, String email, String pw, double cgpa, String resumePath, double sal) {
 		id_no++;
+		this.studentid="Stud:"+id_no;
+		this.name=nm;
+		this.email=email;
+		this.password=pw;
+		this.cgpa=cgpa;
+		this.resumePath=resumePath;
+		readingFile();
+		this.expectedJobSalary=sal;
+		show();
+	}
+	
+	public void readingFile() {
+		try(BufferedReader br = new BufferedReader(new FileReader(resumePath))) {
+			while((line=br.readLine())!=null) {
+				String dline[] = line.split(" ");
+				for(String word : dline) {
+					skills.add(word.toLowerCase().replaceAll("[^a-zA-Z]", ""));
+				}
+			}
+		}
+		catch (IOException e) {
+			System.out.println("Error in Reading Resume File !!!");
+			System.out.println(e.toString());
+		}
 	}
 	
 	public String getStudentID() {
 		return studentid;
 	}
-	public void setStudentID(int id) {
-		studentid = "Student"+id_no;
+	public void setStudentID() {
+		studentid = "Stud:"+id_no;
 	}
 	
 	public String getName() {
@@ -55,9 +82,6 @@ public class Student {
 	public HashSet<String> getSkills() {
 		return skills;
 	}
-	public void addSkill(HashSet<String> skills) {
-		this.skills=skills;	
-	}
 	
 	public String getResumePath() {
 		return resumePath;
@@ -71,5 +95,9 @@ public class Student {
 	}
 	public void setSalary(double sal) {
 		expectedJobSalary = sal;
+	}
+	
+	public void show() {
+		System.out.println("\n---------------------Student Details Successfully Inserted---------------------\nStudent ID: "+studentid+"\nStudent Name: "+name+"\nEmail: "+email+"\nCGPA: "+cgpa+"\nExpected Job Salary: "+expectedJobSalary+"\n-------------------------------------------------------------------\n");
 	}
 }
