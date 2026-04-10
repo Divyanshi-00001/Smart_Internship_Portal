@@ -1,5 +1,6 @@
 package smartinternshipportal.main;
 
+import smartinternshipportal.algorithms.RecommendationEngine;
 import smartinternshipportal.model.*;
 
 import java.util.*;
@@ -43,9 +44,85 @@ class InvalidSalaryException extends Exception {
 
 public class StudentModule {
 	
-	public StudentModule() {
+	public static void BeforeStudentLogin() {
+		Scanner sr = new Scanner(System.in);
+		System.out.print("Enter Email: ");
+	    String semail = sr.nextLine();
+	    
+	    System.out.print("Enter Password: ");
+	    String spass = sr.nextLine();
+	    
+	    Student loggedStudent = studentLogin(semail, spass);
+	    
+	    if(loggedStudent != null) {
+	        System.out.println("Login Successful!");
+	        loggedStudent.show();
+	    } else {
+	        System.out.println("Invalid Credentials!");
+	    }
+	}
+	
+	public static void PowersAfterLogin() {
 		
 	}
+	
+	public static void SignUpResizeMainArrays() {
+		MainApp.Snum++;
+		if(MainApp.Snum>=MainApp.ss.length)
+			MainApp.ss = Arrays.copyOf(MainApp.ss,(MainApp.ss.length+MainApp.ss.length));
+		StudentModule sm = new StudentModule();
+		Student st = sm.CreateStudents();
+		if (st != null) {
+			MainApp.ss[MainApp.Snum] = st;
+		} else {
+			MainApp.Snum--;
+		}
+	} 
+	
+	public static void RecommendJobs() {
+		Scanner sr = new Scanner(System.in);
+		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
+			List<Job> jobList = new ArrayList<>();
+			for(int i = 0; i <= MainApp.Jnum; i++) {
+			    if(MainApp.jj[i] != null) {
+			        jobList.add(MainApp.jj[i]);
+			    }
+			}
+			System.out.print("Enter Student Id: ");
+			String id = sr.nextLine();
+			int i;
+			for(i = 0; i <= MainApp.Snum; i++) {
+			    if(MainApp.ss[i] != null && id.equals(MainApp.ss[i].getStudentID())) {
+			        break;
+			    }
+			}
+			if(i > MainApp.Snum) {
+			    System.out.println("Student not found!");
+			    return;
+			}
+			List<Map.Entry<Job, Double>> recommended = RecommendationEngine.recommendJobs(MainApp.ss[i], jobList);
+
+	        System.out.println("Recommended Jobs:");
+	        for (Map.Entry<Job, Double> jb : recommended) {
+	        	System.out.println("Score: "+jb.getValue());
+	            jb.getKey().show();
+	        }
+	    } else {
+	        System.out.println("No data available!");
+	    }
+	}
+	
+	public static Student studentLogin(String email, String password) {
+	    for(int i = 0; i <= MainApp.Snum; i++) {
+	        if(MainApp.ss[i] != null &&
+	           MainApp.ss[i].getEmail().equals(email) &&
+	           MainApp.ss[i].getPassword().equals(password)) {
+	           return MainApp.ss[i];
+	        }
+	    }
+	    return null;
+	}
+	
 	public Student CreateStudents() {
 		Scanner sr=new Scanner(System.in);
 		try {
