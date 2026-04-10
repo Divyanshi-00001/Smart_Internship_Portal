@@ -60,7 +60,7 @@ public class ApplicationModule {
 
 	        MainApp.aa[MainApp.Anum] = new Application(sid, jid);
 
-	        System.out.println("✅ Application submitted successfully!");
+	        System.out.println("Application submitted successfully!");
 	        System.out.println("Application ID: " + MainApp.aa[MainApp.Anum].getApplicationId());
 
 	    } else {
