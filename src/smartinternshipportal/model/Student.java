@@ -88,6 +88,7 @@ public class Student {
 	}
 	public void setResumePath(String resumePath) {
 		this.resumePath = resumePath;
+		readingFile();
 	}
 	
 	public double getSalary() {
