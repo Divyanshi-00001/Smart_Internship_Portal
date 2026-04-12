@@ -38,25 +38,21 @@ public class AdminModule {
 	}	
 	
 	public void show() {
-		if(MainApp.Jnum>0) System.out.println("---------Company-Job Details---------");
+		if(MainApp.Jnum>=0) System.out.println("-------------------Overall Company-Job Details-------------------");
 		else {System.out.println("No company records found !!");}
 		for(int i=0;i<MainApp.jj.length;i++) {
 			if(MainApp.jj[i] != null) {
 				MainApp.jj[i].show();
-				System.out.println("-------------------------------------");
 			}
 		}
-		if(MainApp.Jnum>0) System.out.println("-------------------------------------\n");
-		if(MainApp.Snum>0) System.out.println("-----------Student Details-----------");
+		if(MainApp.Snum>=0) System.out.println("---------------------Overall Student Details---------------------");
 		else {System.out.println("No Student records found !!");}
 		for(int i=0;i<MainApp.ss.length;i++) {
 			if(MainApp.ss[i] != null) {
 				MainApp.ss[i].show();
-				System.out.println("-------------------------------------");
 			}
 		}
-		if(MainApp.Snum>-1) System.out.println("-------------------------------------");
-		if(MainApp.Anum>-1) System.out.println("-----------Applications-----------");
+		if(MainApp.Anum>-1) System.out.println("---------------------Applications---------------------");
 		else {System.out.println("No Application records found !!");}
 		for(int i = 0; i <= MainApp.Anum; i++) {
 		    if(MainApp.aa[i] != null) {
@@ -64,9 +60,8 @@ public class AdminModule {
 		        System.out.println("Student ID: " + MainApp.aa[i].getStudentId());
 		        System.out.println("Job ID: " + MainApp.aa[i].getJobId());
 		        System.out.println("Status: " + MainApp.aa[i].getStatus());
-		        System.out.println("-------------------------------------");
+		        System.out.println("-------------------------------------\n");
 		    }
 		}
-		if(MainApp.Anum>-1) System.out.println("-------------------------------------");
 	}
 }

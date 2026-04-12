@@ -69,7 +69,7 @@ public class Job extends Company{
 	} 
 	
 	public String getWebLink() {
-		return qualification;
+		return webLink;
 	}
 	public void setWebLink(String webLink) {
 		this.webLink=webLink;
@@ -83,6 +83,6 @@ public class Job extends Company{
 	} 
 	public void show() {
 		super.show();
-		System.out.println("Job Id: "+jobId+"\nJob Title: "+title+"\nJob Location: "+location+"\nJob Salary: "+salary+"\nHighest Qualification Req.: "+qualification+"\nMin. CGPA: "+minCgpa+"\n-------------------------------------------------------\n");
+		System.out.println("Job Id: "+jobId+"\nJob Title: "+title+"\nJob Location: "+location+"\nJob Salary: "+salary+"/-"+"\nHighest Qualification Req.: "+qualification+"\nMin. CGPA: "+minCgpa+"\n-------------------------------------------------------\n");
 	}
 }

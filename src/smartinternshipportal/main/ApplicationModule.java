@@ -10,13 +10,12 @@ public class ApplicationModule {
 		Scanner sr = new Scanner(System.in);
 		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
 			
-	        System.out.println("---------Available Jobs---------");
-	        for(int i = 0; i <= MainApp.Jnum; i++) {
-	            if(MainApp.jj[i] != null) {
-	            	MainApp.jj[i].show();
-	                System.out.println("-------------------------------------");
-	            }
-	        }
+//	        System.out.println("---------Available Jobs---------");
+//	        for(int i = 0; i <= MainApp.Jnum; i++) {
+//	            if(MainApp.jj[i] != null) {
+//	            	MainApp.jj[i].show();
+//	            }
+//	        }
 
 	        System.out.print("Enter Student ID: ");
 	        String sid = sr.nextLine();
@@ -72,7 +71,7 @@ public class ApplicationModule {
 
 	        MainApp.aa[MainApp.Anum] = new Application(sid, jid);
 
-	        System.out.println("Application submitted successfully!");
+	        System.out.println("\nApplication submitted successfully!!!\n");
 	        System.out.println("Apply on: "+ApplyLink);
 	        System.out.println("Application ID: " + MainApp.aa[MainApp.Anum].getApplicationId());
 

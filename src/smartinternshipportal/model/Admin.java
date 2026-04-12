@@ -29,11 +29,11 @@ public class Admin {
 	
 	public boolean Authentication() {
 		if((adminId == adminIdIO) && (usernameIO.equals(username)) && (passwordIO.equals(password))) {
-			System.out.println("Authentiacation is Successful...");
+			System.out.println("Authentiacation is Successful...\n");
 			return true;
 		} 
 		else {
-			System.out.println("Admin is not Authorized! Authentication Failed!! ");
+			System.out.println("Admin is not Authorized! Authentication Failed!! \n");
 			return false;
 		}
 	}

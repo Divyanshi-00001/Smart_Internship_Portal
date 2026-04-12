@@ -108,6 +108,6 @@ public class Student {
 	}
 	
 	public void show() {
-		System.out.println("\n---------------------Student Details Successfully Inserted---------------------\nStudent ID: "+studentid+"\nStudent Name: "+name+"\nEmail: "+email+"\nQualification: "+qualification+"\nCGPA: "+cgpa+"\nExpected Job Salary: "+expectedJobSalary+"\n-------------------------------------------------------------------\n");
+		System.out.println("\n---------------------Student Details---------------------\nStudent ID: "+studentid+"\nStudent Name: "+name+"\nEmail: "+email+"\nQualification: "+qualification+"\nCGPA: "+cgpa+"\nExpected Job Salary: "+expectedJobSalary+"/-"+"\n-------------------------------------------------------------------\n");
 	}
 }

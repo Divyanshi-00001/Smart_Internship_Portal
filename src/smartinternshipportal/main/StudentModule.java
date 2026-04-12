@@ -206,7 +206,7 @@ public class StudentModule {
 			List<Map.Entry<Job, Double>> recommended = RecommendationEngine.recommendJobs(MainApp.ss[i], jobList, nonMatchedSkills);
 
 			int count = 0;
-	        System.out.println("Recommended Jobs:");
+	        System.out.println("\nRecommended Jobs:\n");
 	        for (Map.Entry<Job, Double> jb : recommended) {
 	        	count++;
 	        	if(count>100) break;

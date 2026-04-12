@@ -232,7 +232,7 @@ public class CompanyModule {
 			List<Map.Entry<Student, Double>> recommended = CoRecommendationEngine.recommendJobs(MainApp.jj[i], studentList, nonMatchedSkills);
 
 			int count = 0;
-	        System.out.println("Recommended Students:");
+	        System.out.println("\nRecommended Students:\n");
 	        for (Map.Entry<Student, Double> s : recommended) {
 	        	count++;
 	        	if(count>100) break;
