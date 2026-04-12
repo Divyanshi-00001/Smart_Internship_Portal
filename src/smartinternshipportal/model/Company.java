@@ -46,6 +46,6 @@ public class Company {
 	}
 	
 	public void show() {
-		System.out.println("\n-----------------Job Details Successfully Inserted-----------------\nCompany Id: "+companyId+"\nCompany Name: "+companyName+"\nCompany Official Email: "+email);
+		System.out.println("\n-----------------Job Details-----------------\nCompany Id: "+companyId+"\nCompany Name: "+companyName+"\nCompany Official Email: "+email);
 	}
 }
