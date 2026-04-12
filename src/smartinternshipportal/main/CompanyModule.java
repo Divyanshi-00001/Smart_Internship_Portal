@@ -48,6 +48,12 @@ class InvalidLocationException extends Exception {
 //    }
 //}
 
+class InvalidWebLinkException extends Exception {
+    public InvalidWebLinkException(String msg) { 
+    	super(msg); 
+    }
+}
+
 public class CompanyModule {
 	
 	public static void SignUpResizeMainArrays() {
@@ -83,9 +89,15 @@ public class CompanyModule {
 
 			System.out.print("Enter Salary: ");
 			double salary = Double.parseDouble(sr.nextLine());
+			
+			System.out.print("Enter Highest Qualification Req.: ");
+			String qualification = sr.nextLine();
 
 			System.out.print("Enter Minimum CGPA: ");
 			double cgpa = Double.parseDouble(sr.nextLine());
+			
+			System.out.print("Enter webLink: ");
+			String webLink = sr.nextLine();
 			
 			HashSet<String> skills= new HashSet<>();
 			while (true) {
@@ -113,9 +125,13 @@ public class CompanyModule {
 				throw new InvalidLocationException("Invalid Location");
 			if(salary<0)
 				throw new InvalidSalaryException("Invalid Salary");
+			if (qualification.isEmpty())
+				throw new InvalidQualificationException("Invalid Qualification");
 			if(cgpa<0 || cgpa>10)
 				throw new InvalidCgpaException("Invalid Cgpa");
-			Job jb = new Job( companyName, email, password, title, location, salary, cgpa, skills);
+			if (!webLink.contains(".com"))
+				throw new InvalidWebLinkException("Invalid Link");
+			Job jb = new Job( companyName, email, password, title, location, salary, qualification, cgpa, webLink, skills);
 			return jb;
 		}
 		catch (Exception e) {
@@ -191,6 +207,50 @@ public class CompanyModule {
 	    } while(choice != 4);
 	}
 	
+	public static void RecommendStudents() {
+		Scanner sr = new Scanner(System.in);
+		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
+			List<Student> studentList = new ArrayList<>();
+			for(int i = 0; i <= MainApp.Snum; i++) {
+			    if(MainApp.ss[i] != null) {
+			        studentList.add(MainApp.ss[i]);
+			    }
+			}
+			System.out.print("Enter Job Id: ");
+			String id = sr.nextLine();
+			int i;
+			for(i = 0; i <= MainApp.Jnum; i++) {
+			    if(MainApp.jj[i] != null && id.equals(MainApp.jj[i].getJobId())) {
+			        break;
+			    }
+			}
+			if(i > MainApp.Jnum) {
+			    System.out.println("Job not found!");
+			    return;
+			}
+			HashSet<String> nonMatchedSkills = new HashSet<>();
+			List<Map.Entry<Student, Double>> recommended = CoRecommendationEngine.recommendJobs(MainApp.jj[i], studentList, nonMatchedSkills);
+
+			int count = 0;
+	        System.out.println("Recommended Students:");
+	        for (Map.Entry<Student, Double> s : recommended) {
+	        	count++;
+	        	if(count>100) break;
+	        	System.out.println("Score: "+s.getValue());
+	            s.getKey().show();
+	        }
+	        
+	        System.out.println("List of Not Matched Skills:");
+	        for(String skill : nonMatchedSkills) {
+	        	count++;
+	        	if(count>200)break;
+	        	System.out.println(skill);
+	        }
+	    } else {
+	        System.out.println("No data available!");
+	    }
+	}
+	
 	public static void updateJob(Job job) {
 	    Scanner sc = new Scanner(System.in);
 
@@ -201,8 +261,10 @@ public class CompanyModule {
 	    System.out.println("4. Update Job Title");
 	    System.out.println("5. Update Location");
 	    System.out.println("6. Update Salary");
-	    System.out.println("7. Update CGPA");
-	    System.out.println("8. Update Skills");
+	    System.out.println("7. Update Qualification");
+	    System.out.println("8. Update CGPA");
+	    System.out.println("9. Update Official Web Link");
+	    System.out.println("10. Update Skills");
 
 	    System.out.print("Enter choice: ");
 	    int choice = Integer.parseInt(sc.nextLine());
@@ -291,8 +353,20 @@ public class CompanyModule {
 
 	                job.setSalary(sal);
 	                break;
-
+	                
 	            case 7:
+	                System.out.print("Enter new Qualification: ");
+	                String qualification = sc.nextLine();
+
+	                if(qualification.isEmpty())
+	                    throw new InvalidQualificationException("Invalid Qualification");
+
+	                if(!confirm(sc)) return;
+
+	                job.setQualification(qualification);
+	                break;
+
+	            case 8:
 	                System.out.print("Enter new CGPA: ");
 	                double cgpa = Double.parseDouble(sc.nextLine());
 
@@ -304,7 +378,19 @@ public class CompanyModule {
 	                job.setMinCgpa(cgpa);
 	                break;
 
-	            case 8:
+	            case 9:
+	                System.out.print("Enter new Link: ");
+	                String link = sc.nextLine().trim();
+
+	                if (!link.contains(".com"))
+	                    throw new InvalidEmailException("Invalid Link");
+
+	                if(!confirm(sc)) return;
+
+	                job.setWebLink(link);
+	                break;    
+	            
+	            case 10:
 	                HashSet<String> skills = new HashSet<>();
 
 	                while(true) {
@@ -342,39 +428,6 @@ public class CompanyModule {
 	        return false;
 	    }
 	    return true;
-	}
-	
-	public static void RecommendStudents() {
-		Scanner sr = new Scanner(System.in);
-		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
-			List<Student> studentList = new ArrayList<>();
-			for(int i = 0; i <= MainApp.Snum; i++) {
-			    if(MainApp.ss[i] != null) {
-			        studentList.add(MainApp.ss[i]);
-			    }
-			}
-			System.out.print("Enter Job Id: ");
-			String id = sr.nextLine();
-			int i;
-			for(i = 0; i <= MainApp.Jnum; i++) {
-			    if(MainApp.jj[i] != null && id.equals(MainApp.jj[i].getJobId())) {
-			        break;
-			    }
-			}
-			if(i > MainApp.Jnum) {
-			    System.out.println("Job not found!");
-			    return;
-			}
-			List<Map.Entry<Student, Double>> recommended = CoRecommendationEngine.recommendJobs(MainApp.jj[i], studentList);
-
-	        System.out.println("Recommended Students:");
-	        for (Map.Entry<Student, Double> s : recommended) {
-	        	System.out.println("Score: "+s.getValue());
-	            s.getKey().show();
-	        }
-	    } else {
-	        System.out.println("No data available!");
-	    }
 	}
 	
 }

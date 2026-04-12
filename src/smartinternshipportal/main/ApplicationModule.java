@@ -34,9 +34,11 @@ public class ApplicationModule {
 	        }
 
 	        // Check job exists
+	        String ApplyLink = "";
 	        boolean jobFound = false;
 	        for(int i = 0; i <= MainApp.Jnum; i++) {
 	            if(MainApp.jj[i] != null && jid.equals(MainApp.jj[i].getJobId())) {
+	            	ApplyLink = MainApp.jj[i].getWebLink();
 	                jobFound = true;
 	                break;
 	            }
@@ -51,6 +53,16 @@ public class ApplicationModule {
 	            System.out.println("Invalid Job ID!");
 	            return;
 	        }
+	        
+	        for (int i = 0; i <= MainApp.Anum; i++) {
+	            if (MainApp.aa[i] != null &&
+	                MainApp.aa[i].getStudentId().equals(sid) &&
+	                MainApp.aa[i].getJobId().equals(jid)) {
+
+	                System.out.println("Already applied for this job!");
+	                return;
+	            }
+	        }
 
 	        // Resize array if needed
 	        MainApp.Anum++;
@@ -61,6 +73,7 @@ public class ApplicationModule {
 	        MainApp.aa[MainApp.Anum] = new Application(sid, jid);
 
 	        System.out.println("Application submitted successfully!");
+	        System.out.println("Apply on: "+ApplyLink);
 	        System.out.println("Application ID: " + MainApp.aa[MainApp.Anum].getApplicationId());
 
 	    } else {

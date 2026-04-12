@@ -10,18 +10,20 @@ public class Student {
 	private String name;
 	private String email;
 	private String password;
+	private String qualification;
 	private double cgpa;
 	private HashSet<String> skills = new HashSet<>();
 	private String resumePath;
 	private double expectedJobSalary;
 	private String line;
 	
-	public Student(String nm, String email, String pw, double cgpa, String resumePath, double sal) {
+	public Student(String nm, String email, String pw, String qualification, double cgpa, String resumePath, double sal) {
 		id_no++;
 		this.studentid="Stud:"+id_no;
 		this.name=nm;
 		this.email=email;
 		this.password=pw;
+		this.qualification=qualification;
 		this.cgpa=cgpa;
 		this.resumePath=resumePath;
 		readingFile();
@@ -72,6 +74,13 @@ public class Student {
 		password = pw;
 	}
 	
+	public String getQualification() {
+		return qualification;
+	}
+	public void setQualification(String qualification) {
+		this.qualification=qualification;
+	}
+	
 	public double getCgpa() {
 		return cgpa;
 	}
@@ -99,6 +108,6 @@ public class Student {
 	}
 	
 	public void show() {
-		System.out.println("\n---------------------Student Details Successfully Inserted---------------------\nStudent ID: "+studentid+"\nStudent Name: "+name+"\nEmail: "+email+"\nCGPA: "+cgpa+"\nExpected Job Salary: "+expectedJobSalary+"\n-------------------------------------------------------------------\n");
+		System.out.println("\n---------------------Student Details Successfully Inserted---------------------\nStudent ID: "+studentid+"\nStudent Name: "+name+"\nEmail: "+email+"\nQualification: "+qualification+"\nCGPA: "+cgpa+"\nExpected Job Salary: "+expectedJobSalary+"\n-------------------------------------------------------------------\n");
 	}
 }
