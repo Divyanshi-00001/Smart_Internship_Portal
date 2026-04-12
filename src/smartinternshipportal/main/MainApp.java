@@ -31,10 +31,7 @@ public class MainApp {
 					"2: Student Signup\n" +
 					"3: Student Login\n" +
 					"4: Company Signup\n" +
-					"5: Company Login\n" +
-					"6: Recommend Jobs\n" +
-					"7: Recommend Students\n" +
-					"8: Apply for Job\n\n"+
+					"5: Company Login\n\n" +
 					"Enter your Choice: "
 					);
 			n = sr.nextInt();
@@ -49,12 +46,6 @@ public class MainApp {
 				case 4: CompanyModule.SignUpResizeMainArrays();
 						break;
 				case 5: CompanyModule.BeforeCompanyLogin();
-					    break;
-				case 6: StudentModule.RecommendJobs();
-					    break;
-				case 7: CompanyModule.RecommendStudents();
-					    break;
-				case 8: ApplicationModule.ApplicationsWorking();
 					    break;
 				default: System.out.println("\nInvalid Choice !!!... Please try again later...");
 			}

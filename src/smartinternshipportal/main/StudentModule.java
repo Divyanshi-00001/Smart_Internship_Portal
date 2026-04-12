@@ -24,6 +24,12 @@ class InvalidPasswordException extends Exception {
     }
 }
 
+class InvalidQualificationException extends Exception {
+	public InvalidQualificationException(String msg) {
+		super(msg);
+	}
+}
+
 class InvalidCgpaException extends Exception {
     public InvalidCgpaException(String msg) { 
     	super(msg); 
@@ -68,6 +74,9 @@ public class StudentModule {
 
 			System.out.print("Enter Password: ");
 			String password = sr.nextLine();
+			
+			System.out.print("Enter Qualification: ");
+			String qualification = sr.nextLine();
 
 			System.out.print("Enter CGPA: ");
 			double cgpa = Double.parseDouble(sr.nextLine());
@@ -84,13 +93,15 @@ public class StudentModule {
 			    throw new InvalidEmailException("Invalid Email");
 			if (password.length()<8)
 	            throw new InvalidPasswordException("Weak Password");
+			if (qualification.isEmpty())
+				throw new InvalidQualificationException("Invalid Insert of Qualification");
 			if(cgpa>10 || cgpa<0)
 				throw new InvalidCgpaException("Invalid Cgpa");
 			if (!resumePath.endsWith(".txt"))
 			    throw new InvalidFilePathException("Resume must be .txt file");
 			if(salary<0)
 				throw new InvalidSalaryException("Invalid Salary");
-			return new Student(name,email,password,cgpa,resumePath,salary);
+			return new Student(name,email,password,qualification,cgpa,resumePath,salary);
 		}
 		catch (Exception e) {
 			System.out.println("Error: " + e.getMessage());
@@ -136,8 +147,9 @@ public class StudentModule {
 	    do {
 	        System.out.println("\n1. View Profile");
 	        System.out.println("2. Get Job Recommendations");
-	        System.out.println("3. Update Credentials");
-	        System.out.println("4. Logout");
+	        System.out.println("3. Apply for Job");
+	        System.out.println("4. Update Credentials");
+	        System.out.println("5. Logout");
 	        System.out.print("Enter choice: ");
 
 	        choice = Integer.parseInt(sc.nextLine());
@@ -150,19 +162,67 @@ public class StudentModule {
 	            case 2:
 	                RecommendJobs();
 	                break;
-
+	                
 	            case 3:
+	            	ApplicationModule.ApplicationsWorking();
+				    break;
+
+	            case 4:
 	                updateCredentials(loggedStudent);
 	                break;
 
-	            case 4:
+	            case 5:
 	                System.out.println("Logged out successfully!");
 	                break;
 
 	            default:
 	                System.out.println("Invalid choice!");
 	        }
-	    } while(choice != 4);
+	    } while(choice != 5);
+	}
+	
+	public static void RecommendJobs() {
+		Scanner sr = new Scanner(System.in);
+		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
+			List<Job> jobList = new ArrayList<>();
+			for(int i = 0; i <= MainApp.Jnum; i++) {
+			    if(MainApp.jj[i] != null) {
+			        jobList.add(MainApp.jj[i]);
+			    }
+			}
+			System.out.print("Enter Student Id: ");
+			String id = sr.nextLine();
+			int i;
+			for(i = 0; i <= MainApp.Snum; i++) {
+			    if(MainApp.ss[i] != null && id.equals(MainApp.ss[i].getStudentID())) {
+			        break;
+			    }
+			}
+			if(i > MainApp.Snum) {
+			    System.out.println("Student not found!");
+			    return;
+			}
+			HashSet<String> nonMatchedSkills = new HashSet<>();
+			List<Map.Entry<Job, Double>> recommended = RecommendationEngine.recommendJobs(MainApp.ss[i], jobList, nonMatchedSkills);
+
+			int count = 0;
+	        System.out.println("Recommended Jobs:");
+	        for (Map.Entry<Job, Double> jb : recommended) {
+	        	count++;
+	        	if(count>100) break;
+	        	System.out.println("Score: "+jb.getValue());
+	            jb.getKey().show();
+	        }
+	        
+	        System.out.println("List of Not Matched Skills(Recommendation for Learning.):");
+	        for(String skill : nonMatchedSkills) {
+	        	count++;
+	        	if(count>200)break;
+	        	System.out.println(skill);
+	        }
+	    } else {
+	        System.out.println("No data available!");
+	    }
 	}
 	
 	public static void updateCredentials(Student student) {
@@ -172,9 +232,10 @@ public class StudentModule {
 	    System.out.println("1. Update Name");
 	    System.out.println("2. Update Email");
 	    System.out.println("3. Update Password");
-	    System.out.println("4. Update CGPA");
-	    System.out.println("5. Update Resume");
-	    System.out.println("6. Update Expected Salary");
+	    System.out.println("4. Update Qualification");
+	    System.out.println("5. Update CGPA");
+	    System.out.println("6. Update Resume");
+	    System.out.println("7. Update Expected Salary");
 	    System.out.print("Enter choice: ");
 
 	    int choice = Integer.parseInt(sc.nextLine());
@@ -232,23 +293,64 @@ public class StudentModule {
 	                String password = sc.nextLine();
 	                if(password.length() < 8)
 	                    throw new InvalidPasswordException("Weak Password");
+	                System.out.print("Are you sure you want to update? (yes/no): ");
+		            String confirm3 = sc.nextLine().trim().toLowerCase();
+	
+		            if(!confirm3.equals("yes")) {
+		                System.out.println("Update cancelled.");
+		                return;
+		            }
 	                student.setPassword(password);
 	                break;
-
+	                
 	            case 4:
+		            System.out.print("Enter new Highest Qualification: ");
+		            String qualification = sc.nextLine();
+	
+		            if(qualification.isEmpty())
+		                throw new InvalidQualificationException("Qualification cannot be empty");
+	
+		            System.out.print("Are you sure you want to update? (yes/no): ");
+		            String confirm4 = sc.nextLine().trim().toLowerCase();
+	
+		            if(!confirm4.equals("yes")) {
+		                System.out.println("Update cancelled.");
+		                return;
+		            }
+	
+		            student.setQualification(qualification);
+		            break;
+
+
+	            case 5:
 	                System.out.print("Enter new CGPA: ");
 	                double cgpa = Double.parseDouble(sc.nextLine());
 	                if(cgpa < 0 || cgpa > 10)
 	                    throw new InvalidCgpaException("Invalid CGPA");
+	                System.out.print("Are you sure you want to update? (yes/no): ");
+		            String confirm5 = sc.nextLine().trim().toLowerCase();
+	
+		            if(!confirm5.equals("yes")) {
+		                System.out.println("Update cancelled.");
+		                return;
+		            }
 	                student.setCgpa(cgpa);
 	                break;
 
-	            case 5:
+	            case 6:
 	                System.out.print("Enter new resume path: ");
 	                String path = sc.nextLine();
 
 	                if (!path.endsWith(".txt"))
 	                    throw new InvalidFilePathException("Resume must be .txt file");
+	                
+	                System.out.print("Are you sure you want to update? (yes/no): ");
+		            String confirm6 = sc.nextLine().trim().toLowerCase();
+	
+		            if(!confirm6.equals("yes")) {
+		                System.out.println("Update cancelled.");
+		                return;
+		            }
 
 	                java.io.File f = new java.io.File(path);
 	                if (!f.exists())
@@ -259,11 +361,18 @@ public class StudentModule {
 	                student.readingFile();         // reload skills
 	                break;
 
-	            case 6:
+	            case 7:
 	                System.out.print("Enter new expected salary: ");
 	                double salary = Double.parseDouble(sc.nextLine());
 	                if(salary < 0)
 	                    throw new InvalidSalaryException("Invalid Salary");
+	                System.out.print("Are you sure you want to update? (yes/no): ");
+		            String confirm7 = sc.nextLine().trim().toLowerCase();
+	
+		            if(!confirm7.equals("yes")) {
+		                System.out.println("Update cancelled.");
+		                return;
+		            }
 	                student.setSalary(salary);
 	                break;
 
@@ -277,39 +386,6 @@ public class StudentModule {
 
 	    } catch (Exception e) {
 	        System.out.println("Error: " + e.getMessage());
-	    }
-	}
-	
-	public static void RecommendJobs() {
-		Scanner sr = new Scanner(System.in);
-		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
-			List<Job> jobList = new ArrayList<>();
-			for(int i = 0; i <= MainApp.Jnum; i++) {
-			    if(MainApp.jj[i] != null) {
-			        jobList.add(MainApp.jj[i]);
-			    }
-			}
-			System.out.print("Enter Student Id: ");
-			String id = sr.nextLine();
-			int i;
-			for(i = 0; i <= MainApp.Snum; i++) {
-			    if(MainApp.ss[i] != null && id.equals(MainApp.ss[i].getStudentID())) {
-			        break;
-			    }
-			}
-			if(i > MainApp.Snum) {
-			    System.out.println("Student not found!");
-			    return;
-			}
-			List<Map.Entry<Job, Double>> recommended = RecommendationEngine.recommendJobs(MainApp.ss[i], jobList);
-
-	        System.out.println("Recommended Jobs:");
-	        for (Map.Entry<Job, Double> jb : recommended) {
-	        	System.out.println("Score: "+jb.getValue());
-	            jb.getKey().show();
-	        }
-	    } else {
-	        System.out.println("No data available!");
 	    }
 	}
 }
