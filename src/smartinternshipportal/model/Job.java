@@ -85,4 +85,7 @@ public class Job extends Company{
 		super.show();
 		System.out.println("Job Id: "+jobId+"\nJob Title: "+title+"\nJob Location: "+location+"\nJob Salary: "+salary+"/-"+"\nHighest Qualification Req.: "+qualification+"\nMin. CGPA: "+minCgpa+"\n-------------------------------------------------------\n");
 	}
+	public String details() {
+		return super.details() + "Job Id: "+jobId+"\nJob Title: "+title+"\nJob Location: "+location+"\nJob Salary: "+salary+"/-"+"\nHighest Qualification Req.: "+qualification+"\nMin. CGPA: "+minCgpa+"\n-------------------------------------------------------\n";
+	}
 }

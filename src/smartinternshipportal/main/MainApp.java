@@ -1,10 +1,14 @@
 package smartinternshipportal.main;
 
+import smartinternshipportal.ui.MainMenuUI;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import smartinternshipportal.dao.JobDAO;
+import smartinternshipportal.dao.ApplicantDAO;
+import smartinternshipportal.dao.ApplicationDAO;
 import smartinternshipportal.model.Admin;
 import smartinternshipportal.model.Job;
 import smartinternshipportal.model.Application;
@@ -22,6 +26,12 @@ public class MainApp {
 	public static int Anum=-1;
 	
 	public static void main(String[] args) throws Exception {
+		
+		ApplicantDAO.getAllApplicants();
+		ApplicationDAO.getAllApplications();
+		JobDAO.getAllJobs();
+		
+		new MainMenuUI();
 	
 		java.util.Scanner sr = new java.util.Scanner(System.in);
 		int n;

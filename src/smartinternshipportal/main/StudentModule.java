@@ -2,6 +2,7 @@ package smartinternshipportal.main;
 
 import smartinternshipportal.algorithms.RecommendationEngine;
 import smartinternshipportal.model.*;
+import smartinternshipportal.dao.ApplicantDAO;
 
 import java.util.*;
 
@@ -50,16 +51,64 @@ class InvalidSalaryException extends Exception {
 
 public class StudentModule {
 	
+	public static boolean StudentSignUp(String nm, String email, String pw, String qualification, double cgpa, String resumePath, double sal) {	
+		try {
+			if (nm.isEmpty())
+	            throw new InvalidNameException("Name cannot be empty");
+			if (!email.contains("@") || !email.contains(".") || email.contains(" "))
+			    throw new InvalidEmailException("Invalid Email");
+			for(int i = 0; i <= MainApp.Snum; i++) {
+		        if(MainApp.ss[i] != null &&
+		           MainApp.ss[i].getEmail().equals(email)) {
+		        	throw new InvalidEmailException("This Email is Already Registered.");
+		        }
+		    }
+			if (pw.length()<8)
+	            throw new InvalidPasswordException("Weak Password");
+			if (qualification.isEmpty())
+				throw new InvalidQualificationException("Invalid Insert of Qualification");
+			if(cgpa>10 || cgpa<0)
+				throw new InvalidCgpaException("Invalid Cgpa");
+			if (!resumePath.endsWith(".txt"))
+			    throw new InvalidFilePathException("Resume must be .txt file");
+			if(sal<0)
+				throw new InvalidSalaryException("Invalid Salary");
+			MainApp.Snum++;
+			if(MainApp.Snum>=MainApp.ss.length)
+				MainApp.ss = Arrays.copyOf(MainApp.ss,(MainApp.ss.length+MainApp.ss.length));	
+			Student st = new Student(nm,email,pw,qualification,cgpa,resumePath,sal);
+			if (st != null) {
+				MainApp.ss[MainApp.Snum] = st;
+				ApplicantDAO.insertApplicant(st);
+				return true;
+			} else {
+				MainApp.Snum--;
+				return false;
+			}
+		}
+		catch (Exception e) {
+			System.out.println("Error: " + e.getMessage());
+            System.out.println("Try again...\n");
+		}
+		return false;
+	}
+	
 	public static void SignUpResizeMainArrays() {
-		MainApp.Snum++;
-		if(MainApp.Snum>=MainApp.ss.length)
-			MainApp.ss = Arrays.copyOf(MainApp.ss,(MainApp.ss.length+MainApp.ss.length));
-		StudentModule sm = new StudentModule();
-		Student st = sm.CreateStudents();
-		if (st != null) {
-			MainApp.ss[MainApp.Snum] = st;
-		} else {
-			MainApp.Snum--;
+		try {
+			MainApp.Snum++;
+			if(MainApp.Snum>=MainApp.ss.length)
+				MainApp.ss = Arrays.copyOf(MainApp.ss,(MainApp.ss.length+MainApp.ss.length));
+			StudentModule sm = new StudentModule();
+			Student st = sm.CreateStudents();
+			if (st != null) {
+				ApplicantDAO.insertApplicant(st);
+				MainApp.ss[MainApp.Snum] = st;
+			} else {
+				MainApp.Snum--;
+			}
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
 		}
 	} 
 	
@@ -91,6 +140,12 @@ public class StudentModule {
 	            throw new InvalidNameException("Name cannot be empty");
 			if (!email.contains("@") || !email.contains("."))
 			    throw new InvalidEmailException("Invalid Email");
+			for(int i = 0; i <= MainApp.Snum; i++) {
+		        if(MainApp.ss[i] != null &&
+		           MainApp.ss[i].getEmail().equals(email)) {
+		        	throw new InvalidEmailException("This Email is Already Registered.");
+		        }
+		    }
 			if (password.length()<8)
 	            throw new InvalidPasswordException("Weak Password");
 			if (qualification.isEmpty())
@@ -110,7 +165,7 @@ public class StudentModule {
 		return null;
 	}
 	
-	public static void BeforeStudentLogin() {
+	public static void BeforeStudentLogin() throws Exception {
 		Scanner sr = new Scanner(System.in);
 		System.out.print("Enter Email: ");
 	    String semail = sr.nextLine();
@@ -140,7 +195,7 @@ public class StudentModule {
 	    return null;
 	}
 	
-	public static void PowersAfterLogin(Student loggedStudent) {
+	public static void PowersAfterLogin(Student loggedStudent) throws Exception {
 	    Scanner sc = new Scanner(System.in);
 	    int choice;
 
@@ -222,6 +277,51 @@ public class StudentModule {
 	        }
 	    } else {
 	        System.out.println("No data available!");
+	    }
+	}
+	
+	public static String[] RecommendJobsUI(String id) {
+		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
+			List<Job> jobList = new ArrayList<>();
+			for(int i = 0; i <= MainApp.Jnum; i++) {
+			    if(MainApp.jj[i] != null) {
+			        jobList.add(MainApp.jj[i]);
+			    }
+			}
+			int i;
+			for(i = 0; i <= MainApp.Snum; i++) {
+			    if(MainApp.ss[i] != null && id.equals(MainApp.ss[i].getStudentID())) {
+			        break;
+			    }
+			}
+			if(i > MainApp.Snum) {
+			    return new String[]{"Student not found!","Student not found!"};
+			}
+			
+			HashSet<String> nonMatchedSkills = new HashSet<>();
+			List<Map.Entry<Job, Double>> recommended = RecommendationEngine.recommendJobs(MainApp.ss[i], jobList, nonMatchedSkills);
+
+			String jobs="";
+			String skills="";
+			
+			int count = 0;
+			jobs += "Recommended Jobs:\n\n";
+	        for (Map.Entry<Job, Double> jb : recommended) {
+	        	count++;
+	        	if(count>100) break;
+	        	jobs += "Score: "+jb.getValue() + "\n" + jb.getKey().details() + "\n";
+	        }
+	        
+	        skills += "List of Not Matched Skills(Recommendation for Learning.):" + "\n\n";
+	        for(String skill : nonMatchedSkills) {
+	        	count++;
+	        	if(count>200)break;
+	        	skills += skill + "\n";
+	        }
+	        return new String[]{jobs, skills};
+
+	    } else {
+	        return new String[]{"No data available!","No data available!"};
 	    }
 	}
 	
@@ -381,6 +481,7 @@ public class StudentModule {
 	                return;
 	        }
 
+	        ApplicantDAO.updateApplicant(student);
 	        System.out.println("Details updated successfully!");
 	        student.show();
 
