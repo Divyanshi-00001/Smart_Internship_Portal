@@ -3,20 +3,20 @@ package smartinternshipportal.main;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import smartinternshipportal.dao.ApplicationDAO;
 import smartinternshipportal.model.Application;
 
 public class ApplicationModule {
-	public static void ApplicationsWorking() {
+	public static void ApplicationsWorking() throws Exception {
 		Scanner sr = new Scanner(System.in);
 		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
 			
-	        System.out.println("---------Available Jobs---------");
-	        for(int i = 0; i <= MainApp.Jnum; i++) {
-	            if(MainApp.jj[i] != null) {
-	            	MainApp.jj[i].show();
-	                System.out.println("-------------------------------------");
-	            }
-	        }
+//	        System.out.println("---------Available Jobs---------");
+//	        for(int i = 0; i <= MainApp.Jnum; i++) {
+//	            if(MainApp.jj[i] != null) {
+//	            	MainApp.jj[i].show();
+//	            }
+//	        }
 
 	        System.out.print("Enter Student ID: ");
 	        String sid = sr.nextLine();
@@ -71,8 +71,9 @@ public class ApplicationModule {
 	        }
 
 	        MainApp.aa[MainApp.Anum] = new Application(sid, jid);
+	        ApplicationDAO.insertApplication(MainApp.aa[MainApp.Anum]);
 
-	        System.out.println("Application submitted successfully!");
+	        System.out.println("\nApplication submitted successfully!!!\n");
 	        System.out.println("Apply on: "+ApplyLink);
 	        System.out.println("Application ID: " + MainApp.aa[MainApp.Anum].getApplicationId());
 

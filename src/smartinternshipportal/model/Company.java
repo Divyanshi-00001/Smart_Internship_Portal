@@ -48,4 +48,7 @@ public class Company {
 	public void show() {
 		System.out.println("\n-----------------Job Details-----------------\nCompany Id: "+companyId+"\nCompany Name: "+companyName+"\nCompany Official Email: "+email);
 	}
+	public String details() {
+		return "-----------------Job Details-----------------\nCompany Id: "+companyId+"\nCompany Name: "+companyName+"\nCompany Official Email: "+email+"\n";
+	}
 }

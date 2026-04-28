@@ -1,6 +1,7 @@
 package smartinternshipportal.main;
 
 import smartinternshipportal.algorithms.CoRecommendationEngine;
+import smartinternshipportal.dao.JobDAO;
 import smartinternshipportal.model.*;
 
 import java.util.*;
@@ -56,7 +57,7 @@ class InvalidWebLinkException extends Exception {
 
 public class CompanyModule {
 	
-	public static void SignUpResizeMainArrays() {
+	public static void SignUpResizeMainArrays() throws Exception {
 		MainApp.Jnum++;
 		if(MainApp.Jnum>=MainApp.jj.length)
 			MainApp.jj = Arrays.copyOf(MainApp.jj,(MainApp.jj.length+MainApp.jj.length));
@@ -64,6 +65,7 @@ public class CompanyModule {
 		Job job = cm.CreateJob();
 		if (job != null) {
 			MainApp.jj[MainApp.Jnum] = job;
+			JobDAO.insertJob(MainApp.jj[MainApp.Jnum]);
 		} else {
 			MainApp.Jnum--; // rollback
 		}
@@ -232,7 +234,7 @@ public class CompanyModule {
 			List<Map.Entry<Student, Double>> recommended = CoRecommendationEngine.recommendJobs(MainApp.jj[i], studentList, nonMatchedSkills);
 
 			int count = 0;
-	        System.out.println("Recommended Students:");
+	        System.out.println("\nRecommended Students:\n");
 	        for (Map.Entry<Student, Double> s : recommended) {
 	        	count++;
 	        	if(count>100) break;
@@ -248,6 +250,51 @@ public class CompanyModule {
 	        }
 	    } else {
 	        System.out.println("No data available!");
+	    }
+	}
+	
+	public static String[] RecommendStudentsUI(String id) {
+		if (MainApp.Snum >= 0 && MainApp.Jnum >= 0) {
+			List<Student> studentList = new ArrayList<>();
+			for(int i = 0; i <= MainApp.Snum; i++) {
+			    if(MainApp.ss[i] != null) {
+			        studentList.add(MainApp.ss[i]);
+			    }
+			}
+			
+			int i;
+			for(i = 0; i <= MainApp.Jnum; i++) {
+			    if(MainApp.jj[i] != null && id.equals(MainApp.jj[i].getJobId())) {
+			        break;
+			    }
+			}
+			if(i > MainApp.Jnum) {
+			    //System.out.println("Job not found!");
+			    return new String[]{"Job not found!","Job not found!"};
+			}
+			HashSet<String> nonMatchedSkills = new HashSet<>();
+			List<Map.Entry<Student, Double>> recommended = CoRecommendationEngine.recommendJobs(MainApp.jj[i], studentList, nonMatchedSkills);
+
+			String applicants="";
+			String skills="";
+			
+			int count = 0;
+	        applicants += "Recommended Students:\n\n";
+	        for (Map.Entry<Student, Double> s : recommended) {
+	        	count++;
+	        	if(count>100) break;
+	        	applicants += "Score:"+s.getValue()+"\n"+s.getKey().details()+"\n";
+	        }
+	        
+	        skills += "List of Not Matched Skills:\n\n";
+	        for(String skill : nonMatchedSkills) {
+	        	count++;
+	        	if(count>200)break;
+	        	skills += skill + "\n";
+	        }
+	        return new String[]{applicants, skills};
+	    } else {
+	    	return new String[]{"No data available!","No data available!"};
 	    }
 	}
 	
@@ -410,7 +457,8 @@ public class CompanyModule {
 	                System.out.println("Invalid choice!");
 	                return;
 	        }
-
+	        
+	        JobDAO.updateJob(job);
 	        System.out.println("Updated successfully!");
 	        job.show();
 
